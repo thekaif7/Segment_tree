@@ -45,6 +45,30 @@ void buildTree(int* arr,node *tree, int start , int end,int index){
 
 }
 
+void update(node*tree , int start , int end , int tree_node ,int index, int value){
+  if(start==end){
+    tree[index].sum=value;
+    tree[index].max_sum=value;
+    tree[index].b_sf=value;
+    tree[index].b_pr=value;
+    return ;
+  }
+
+  int mid = (start+end)/2;
+  if(index>mid){
+    update(tree,mid+1,end,2*tree_node+1,index,value);
+
+  }
+
+  else{
+    update(tree,start,mid,2*tree_node,index,value);
+  }
+
+  tree[index] = merge(tree[2*index],tree[2*index+1]);
+
+
+}
+
 node query(node *tree,int start,int end ,int index,int left , int right){
   //completely outside the range
   if(start>right || end<left){
@@ -76,29 +100,40 @@ node query(node *tree,int start,int end ,int index,int left , int right){
 
 int main(){
 
-    int n;
-    cin>>n;
+    int t;
+    cin>>t;
+
+    while(t--){
+
+      int n,q;
+      cin>>n>>q;
 
     int *arr = new int[n];
 
     for(int i=0;i<n;i++){
         cin>>arr[i];
     }
-
-    int t;
-    cin>>t;
-
     node* tree = new node[4*n];
     buildTree(arr,tree,0,n-1,1);
 
-    while(t--){
-        int l,r;
-        cin>>l>>r;
+    while(q--){
+
+    string Q;
+    int l,r;
+    cin>>Q>>l>>r;
+
+    if(Q=="U"){
+      update(tree,0,n-1,1,l-1,r);
+    }
+    else{
 
         node answer = query(tree,0,n-1,1,l-1,r-1);
         cout<<answer.max_sum<<endl;
+        }
     }
+    
 
+    }
 
 
 
